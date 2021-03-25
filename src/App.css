@@ -1,5 +1,17 @@
 .App {
-  text-align: center;
+  text-align: left;
+  margin-left: 2rem;
+}
+
+.App h1 {
+  border-bottom: 1px solid gray;
+  padding-bottom: 0.5rem;
+}
+
+img.user-avatar {
+  vertical-align: text-bottom;
+  height: 3rem;
+  padding-right: 0.75rem;
 }
 
 .App-logo {
@@ -35,4 +47,30 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+dl.meta {
+  width: 500px;
+  overflow: hidden;
+  padding: 0;
+  margin-left: 1rem;
+}
+
+.meta dt {
+  float: left;
+  min-width: 100px;
+  width: 30%;
+  padding: 0;
+  margin: 0;
+}
+
+.meta dd {
+  float: left;
+  width: 70%;
+  padding: 0;
+  margin: 0;
+}
+
+.loading {
+  padding-left: 1rem;
 }
