@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 
 const USERNAME = 'bolek';
 
-function App() {
+const useUser = (username) => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://api.github.com/users/${USERNAME}`, {
+    fetch(`https://api.github.com/users/${username}`, {
       headers: {
         Authorization: `token ${Secrets.GITHUB_AUTHENTICATION_TOKEN}`,
       },
@@ -19,7 +19,13 @@ function App() {
         setUser(user);
         setLoading(false);
       });
-  }, []);
+  }, [username]);
+
+  return [user, { loading }];
+};
+
+function App() {
+  const [user, { loading }] = useUser(USERNAME);
 
   if (loading) {
     return (
