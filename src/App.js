@@ -1,18 +1,44 @@
 import './App.css';
+import { useState, useEffect } from 'react';
+
+const USERNAME = 'bolek';
 
 function App() {
+  const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`https://api.github.com/users/${USERNAME}`)
+      .then((result) => result.json())
+      .then((user) => {
+        setUser(user);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className='loading'>
+        <p>loading profile ...</p>
+      </div>
+    );
+  }
+
   return (
     <div className='App'>
       <h1>
-        <img className='user-avatar' src='placeholder.png' alt='avatar' />
-        <span>John Doe</span>
+        <img className='user-avatar' src={user.avatar_url} alt='avatar' />
+        <span>{user.name}</span>
       </h1>
+
+      <p>{user.bio}</p>
+      <h2>Fancy Stats</h2>
 
       <dl className='meta'>
         <dt>Followers</dt>
-        <dd>100</dd>
+        <dd>{user.followers}</dd>
         <dt>Public repos</dt>
-        <dd>50</dd>
+        <dd>{user.public_repos}</dd>
       </dl>
 
       <h2>Repositories</h2>
