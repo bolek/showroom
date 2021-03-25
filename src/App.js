@@ -2,11 +2,12 @@ import './App.css';
 import Secrets from './Secrets.js';
 import { useState, useEffect } from 'react';
 
-const USERNAME = 'bolek';
+const USERNAME = 'blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
 const useUser = (username) => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
 
   useEffect(() => {
     fetch(`https://api.github.com/users/${username}`, {
@@ -14,23 +15,38 @@ const useUser = (username) => {
         Authorization: `token ${Secrets.GITHUB_AUTHENTICATION_TOKEN}`,
       },
     })
-      .then((result) => result.json())
+      .then((result) => {
+        if (result.status === 404) throw Error('user not found');
+        return result.json();
+      })
       .then((user) => {
         setUser(user);
+        setLoading(false);
+      })
+      .catch(function (error) {
+        setError(error.message);
         setLoading(false);
       });
   }, [username]);
 
-  return [user, { loading }];
+  return [user, { loading, error }];
 };
 
 function App() {
-  const [user, { loading }] = useUser(USERNAME);
+  const [user, { loading, error }] = useUser(USERNAME);
 
   if (loading) {
     return (
       <div className='loading'>
         <p>loading profile ...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className='loading'>
+        <p>{error}</p>
       </div>
     );
   }
