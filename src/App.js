@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react';
 
 const USERNAME = 'blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
+const handleErrors = (response) => {
+  if (response.status === 404) throw Error('not found');
+  return response.json();
+};
+
 const useUser = (username) => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
@@ -15,10 +20,7 @@ const useUser = (username) => {
         Authorization: `token ${Secrets.GITHUB_AUTHENTICATION_TOKEN}`,
       },
     })
-      .then((result) => {
-        if (result.status === 404) throw Error('user not found');
-        return result.json();
-      })
+      .then(handleErrors)
       .then((user) => {
         setUser(user);
         setLoading(false);
