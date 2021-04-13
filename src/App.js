@@ -1,4 +1,5 @@
 import './App.css';
+import Secrets from './Secrets.js';
 import { useState, useEffect } from 'react';
 
 const USERNAME = 'bolek';
@@ -8,7 +9,11 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://api.github.com/users/${USERNAME}`)
+    fetch(`https://api.github.com/users/${USERNAME}`, {
+      headers: {
+        Authorization: `token ${Secrets.GITHUB_AUTHENTICATION_TOKEN}`,
+      },
+    })
       .then((result) => result.json())
       .then((user) => {
         setUser(user);

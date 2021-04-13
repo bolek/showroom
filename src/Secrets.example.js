@@ -1,0 +1,5 @@
+const SECRETS = {
+  GITHUB_AUTHENTICATION_TOKEN: 'MY_SECRET_TOKEN',
+};
+
+export default SECRETS;
