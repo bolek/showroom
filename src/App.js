@@ -2,7 +2,7 @@ import './App.css';
 import Secrets from './Secrets.js';
 import { useState, useEffect } from 'react';
 
-const USERNAME = 'blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+const USERNAME = 'rails';
 
 const handleErrors = (response) => {
   if (response.status === 404) throw Error('not found');
