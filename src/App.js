@@ -4,6 +4,19 @@ import { useState, useEffect } from 'react';
 
 const USERNAME = 'rails';
 
+const GithubService = {
+  async get(endpoint, { onError, onComplete }) {
+    return fetch(`https://api.github.com/${endpoint}`, {
+      headers: {
+        Authorization: `token ${Secrets.GITHUB_AUTHENTICATION_TOKEN}`,
+      },
+    })
+      .then(handleErrors)
+      .then(onComplete)
+      .catch(onError);
+  },
+};
+
 const handleErrors = (response) => {
   if (response.status === 404) throw Error('not found');
   return response.json();
@@ -15,20 +28,16 @@ const useUser = (username) => {
   const [error, setError] = useState();
 
   useEffect(() => {
-    fetch(`https://api.github.com/users/${username}`, {
-      headers: {
-        Authorization: `token ${Secrets.GITHUB_AUTHENTICATION_TOKEN}`,
-      },
-    })
-      .then(handleErrors)
-      .then((user) => {
-        setUser(user);
-        setLoading(false);
-      })
-      .catch(function (error) {
+    GithubService.get(`users/${username}`, {
+      onError(error) {
         setError(error.message);
         setLoading(false);
-      });
+      },
+      onComplete(user) {
+        setUser(user);
+        setLoading(false);
+      },
+    });
   }, [username]);
 
   return [user, { loading, error }];
