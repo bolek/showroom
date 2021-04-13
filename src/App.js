@@ -1,8 +1,8 @@
 import './App.css';
 import Secrets from './Secrets.js';
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
-const USERNAME = 'rails';
+const USERNAME = 'bolek';
 
 const GithubService = {
   async get(endpoint, { onError, onComplete }) {
@@ -27,6 +27,17 @@ const useGithubService = (endpoint) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
+  const refetch = useCallback(() => {
+    GithubService.get(endpoint, {
+      onError(error) {
+        console.log(error);
+      },
+      onComplete(data) {
+        setData(data);
+      },
+    });
+  }, [endpoint]);
+
   useEffect(() => {
     GithubService.get(endpoint, {
       onError(error) {
@@ -40,17 +51,25 @@ const useGithubService = (endpoint) => {
     });
   }, [endpoint]);
 
-  return [data, { loading, error }];
+  return [data, { loading, error, refetch }];
 };
 
 const useUser = (username) => {
-  const [user, { loading, error }] = useGithubService(`users/${username}`);
+  const [user, { loading, error, refetch }] = useGithubService(
+    `users/${username}`,
+  );
 
-  return [user, { loading, error }];
+  return [user, { loading, error, refetch }];
 };
 
 function App() {
-  const [user, { loading, error }] = useUser(USERNAME);
+  const [user, { loading, error, refetch }] = useUser(USERNAME);
+
+  useEffect(() => {
+    const polling = setInterval(refetch, 10000);
+
+    return () => clearInterval(polling);
+  }, [refetch]);
 
   if (loading) {
     return (
