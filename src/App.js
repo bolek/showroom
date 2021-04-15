@@ -22,23 +22,29 @@ const handleErrors = (response) => {
   return response.json();
 };
 
-const useUser = (username) => {
-  const [user, setUser] = useState();
+const useGithubService = (endpoint) => {
+  const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
   useEffect(() => {
-    GithubService.get(`users/${username}`, {
+    GithubService.get(endpoint, {
       onError(error) {
         setError(error.message);
         setLoading(false);
       },
-      onComplete(user) {
-        setUser(user);
+      onComplete(data) {
+        setData(data);
         setLoading(false);
       },
     });
-  }, [username]);
+  }, [endpoint]);
+
+  return [data, { loading, error }];
+};
+
+const useUser = (username) => {
+  const [user, { loading, error }] = useGithubService(`users/${username}`);
 
   return [user, { loading, error }];
 };
